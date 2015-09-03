@@ -20,7 +20,7 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
     public static final int REQUEST_BLUETOOTH_ENABLE = 1;
     private BeaconManager beaconManager;
-    public static final String TAG = "BeaconsEverywhere";
+    public static final String TAG = "Presence";
     public TextView text;
 
     @Override
