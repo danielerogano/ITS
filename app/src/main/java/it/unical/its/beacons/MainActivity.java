@@ -92,7 +92,8 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
             public void didEnterRegion(Region region) {
                 try {
                     Log.d(TAG, "Enter Region");
-                    Toast.makeText(getApplicationContext(), "Enter Region", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), "Enter Region", Toast.LENGTH_SHORT).show();
+                    displayMessage("Enter Region");
                     beaconManager.startRangingBeaconsInRegion(region);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -104,7 +105,8 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
             public void didExitRegion(Region region) {
                 try {
                     Log.d(TAG, "Exit Region");
-                    Toast.makeText(getApplicationContext(), "Exit Region", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), "Exit Region", Toast.LENGTH_SHORT).show();
+                    displayMessage("Exit Region");
                     beaconManager.stopRangingBeaconsInRegion(region);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -123,27 +125,30 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 //   Log.i(TAG, "The first beacon I see is about "+beacons.iterator().next().getDistance()+" meters away.");
                 for (Beacon oneBeacon : beacons) {
-                    Log.d(TAG, "Beacon: " + oneBeacon.getId1() + " - " + oneBeacon.getId2() + " - " + oneBeacon.getId3());
-                    Log.d(TAG, "Distance: " + oneBeacon.getDistance() + "!");
+                    if (oneBeacon.getId2().equals(Identifier.parse("2")) && oneBeacon.getId3().equals(Identifier.parse("1"))) {
+                        Log.d(TAG, "Beacon: " + oneBeacon.getId2() + " - " + oneBeacon.getId3() + " - Distance: " + oneBeacon.getDistance() + " - Rssi: " + oneBeacon.getRssi() + " - TxPower: " + oneBeacon.getTxPower());
+                    }
+                    // Log.d(TAG, "Distance: " + oneBeacon.getDistance() + "!");
 
-                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId3().equals(Identifier.parse("1"))) {
-                        //Log.d(TAG, "OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-                        updateText("CUCINA");
-                        // Perform distance-specific action here
+                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId2().equals(Identifier.parse("1")) && oneBeacon.getId3().equals(Identifier.parse("1"))) {
+                        updateText("Beacon PRO 1");
                     }
-                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId3().equals(Identifier.parse("2"))) {
-                        //Log.d(TAG, "OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-                        updateText("STUDIO");
-                        // Perform distance-specific action here
+                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId2().equals(Identifier.parse("1")) && oneBeacon.getId3().equals(Identifier.parse("2"))) {
+                        updateText("Beacon PRO 2");
                     }
-                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId3().equals(Identifier.parse("3"))) {
-                        //Log.d(TAG, "OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-                        updateText("STANZA DA LETTO");
-                        // Perform distance-specific action here
+                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId2().equals(Identifier.parse("1")) && oneBeacon.getId3().equals(Identifier.parse("3"))) {
+                        updateText("Beacon PRO 3");
                     }
-
+                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId2().equals(Identifier.parse("2")) && oneBeacon.getId3().equals(Identifier.parse("1"))) {
+                        updateText("Beacon mini 1");
+                    }
+                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId2().equals(Identifier.parse("2")) && oneBeacon.getId3().equals(Identifier.parse("2"))) {
+                        updateText("Beacon mini 2");
+                    }
+                    if (oneBeacon.getDistance() < 1.0 && oneBeacon.getId2().equals(Identifier.parse("2")) && oneBeacon.getId3().equals(Identifier.parse("3"))) {
+                        updateText("Beacon mini 3");
+                    }
                 }
-
             }
         });
 
@@ -161,6 +166,14 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
                 text = (TextView) MainActivity.this
                         .findViewById(R.id.textView);
                 text.setText(line);
+            }
+        });
+    }
+
+    public void displayMessage(final String message) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
     }
