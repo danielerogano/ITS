@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Beacons</string>
 
+    <string name="SEND_URL">http://its.unical.it/beacons/upload.php</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 </resources>
