@@ -1,113 +1,175 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:clickable="false">
 
-    <TextView android:text="User: " android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Initializing..."
-        android:id="@+id/textView"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/imageView3" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.4"
+        android:orientation="vertical" >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:background="@drawable/uno"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:layout_above="@+id/imageView"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/due"
-        android:layout_toEndOf="@+id/imageView4" />
+            <TextView android:text="User: " android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView3"
-        android:layout_alignTop="@+id/imageView2"
-        android:layout_toStartOf="@+id/imageView2"
-        android:background="@drawable/tre" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" "
+                android:id="@+id/textViewUuid"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/textView2" />
+        </LinearLayout>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView4"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/imageView"
-        android:background="@drawable/quattro" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Initializing..."
+            android:id="@+id/textView"
+            android:layout_below="@+id/textViewUuid"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="B1: "
-        android:id="@+id/textViewB1"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="B2: "
-        android:id="@+id/textViewB2"
-        android:layout_below="@+id/textViewB1"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="B1: "
+                android:id="@+id/textViewB1"
+                android:layout_below="@+id/textView"
+                android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="B3: "
-        android:id="@+id/textViewB3"
-        android:layout_below="@+id/textViewB2"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:id="@+id/textViewB1value"
+                android:layout_below="@+id/textView"
+                android:layout_toEndOf="@+id/textViewB1" />
+        </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/textViewB1value"
-        android:layout_below="@+id/textView"
-        android:layout_toEndOf="@+id/textViewB1" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/textViewB2value"
-        android:layout_below="@+id/textViewB1"
-        android:layout_toEndOf="@+id/textViewB2" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="B2: "
+                android:id="@+id/textViewB2"
+                android:layout_below="@+id/textViewB1"
+                android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/textViewB3value"
-        android:layout_alignTop="@+id/textViewB3"
-        android:layout_toEndOf="@+id/textViewB3" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:id="@+id/textViewB2value"
+                android:layout_below="@+id/textViewB1"
+                android:layout_toEndOf="@+id/textViewB2" />
+        </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" "
-        android:id="@+id/textViewUuid"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/textView2" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="B3: "
+                android:id="@+id/textViewB3"
+                android:layout_below="@+id/textViewB2"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:id="@+id/textViewB3value"
+                android:layout_alignTop="@+id/textViewB3"
+                android:layout_toEndOf="@+id/textViewB3" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.3"
+
+            android:orientation="horizontal"
+            android:gravity="bottom">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView3"
+                android:layout_alignTop="@+id/imageView2"
+                android:layout_toStartOf="@+id/imageView2"
+                android:layout_weight="1.0"
+                android:background="@drawable/tre" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView2"
+                android:layout_above="@+id/imageView"
+                android:layout_alignParentEnd="true"
+                android:layout_weight="1.0"
+                android:background="@drawable/due"
+                android:layout_toEndOf="@+id/imageView4" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.3"
+            android:orientation="horizontal"
+            android:gravity="top">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView4"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1.0"
+                android:layout_toStartOf="@+id/imageView"
+                android:background="@drawable/quattro" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:background="@drawable/uno"
+                android:layout_weight="1.0"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </RelativeLayout>

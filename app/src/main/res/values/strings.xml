@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Beacons</string>
+    <string name="app_name">ItsBeacons</string>
 
     <string name="SEND_URL">http://its.unical.it/beacons/upload.php</string>
 

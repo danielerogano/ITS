@@ -1,16 +1,10 @@
 package it.unical.its.beacons;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Handler;
 import android.os.RemoteException;
-import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,12 +21,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.altbeacon.beacon.*;
-import org.apache.commons.net.ntp.NTPUDPClient;
-import org.apache.commons.net.ntp.TimeInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,7 +47,6 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
     private DeviceUUIDFactory uuidFactory;
     private String deviceId;
-    private Long time;
     private String Str_time;
 
     public boolean IsInOffice;
@@ -205,21 +195,17 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
             public void didEnterRegion(Region region) {
                 try {
                     Log.d(TAG, "Enter Region");
-                    // Toast.makeText(getApplicationContext(), "Enter Region", Toast.LENGTH_SHORT).show();
-                    displayMessage("Benvenuto in ufficio!");
-                    IsInOffice = true;
+                    displayMessage("Beacons rilevati!");
+                    updateTextStatus("Beacons nei dintorni!");
                     beaconManager.startRangingBeaconsInRegion(region);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
             public void didExitRegion(Region region) {
                 try {
-                    Log.d(TAG, "Exit Region");
-                    // Toast.makeText(getApplicationContext(), "Exit Region", Toast.LENGTH_SHORT).show();
                     displayMessage("Arrivederci!");
                     IsInOffice = false;
                     beaconManager.stopRangingBeaconsInRegion(region);
@@ -258,6 +244,13 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
                         tx3 = oneBeacon.getTxPower();
                         rssi3 = oneBeacon.getRssi();
                         updateText3("" + d3);
+                    }
+
+                    if (d1< 5 || d2 < 5 || d3 < 5) {
+                        IsInOffice = true;
+                    }
+                    else {
+                        IsInOffice = false;
                     }
 
 /*
@@ -342,6 +335,16 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
             public void run() {
                 txtuuid = (TextView) MainActivity.this
                         .findViewById(R.id.textViewUuid);
+                txtuuid.setText(line);
+            }
+        });
+    }
+
+    public void updateTextStatus(final String line) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                txtuuid = (TextView) MainActivity.this
+                        .findViewById(R.id.textView);
                 txtuuid.setText(line);
             }
         });
