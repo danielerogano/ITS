@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
@@ -33,10 +34,13 @@ import org.json.JSONObject;
 
 import java.net.InetAddress;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
@@ -46,14 +50,23 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
     public TextView text, txt1, txt2, txt3, txtuuid;
     public ImageView img1, img2, img3, img4;
     public double d1, d2, d3;
-    public int area;
+    public double tx1, tx2, tx3;
+    public double rssi1, rssi2, rssi3;
+    public double area;
 
     private DeviceUUIDFactory uuidFactory;
     private String deviceId;
     private Long time;
+    private String Str_time;
+
+    public boolean IsInOffice;
+    public boolean isTimerRunning;
+    Timer updateTimer;
 
     public static String SEND_URL;
     public static final String TIME_SERVER = "time-a.nist.gov";
+
+    private int REFRESH_TIME = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +85,15 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
         txt3 = (TextView)findViewById(R.id.textViewB3value);
         txtuuid = (TextView)findViewById(R.id.textViewUuid);
 
+        IsInOffice = false;
+        isTimerRunning = false;
+
         img1 = (ImageView) findViewById(R.id.imageView);
         img1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 area = 1;
                 Toast.makeText(getApplicationContext(), "Area 1", Toast.LENGTH_SHORT).show();
+
             }
         });
         img2 = (ImageView) findViewById(R.id.imageView2);
@@ -109,12 +126,37 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
                 .setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
 
         beaconManager.bind(this);
+
+        updateTimer = new Timer();
+
+        updateTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                // What you want to do goes here
+                if (IsInOffice) {
+                    sendData();
+                    isTimerRunning = true;
+                }
+            }
+        }, 0, REFRESH_TIME);
+
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         beaconManager.unbind(this);
+        stopUpdates();
+        super.onDestroy();
+
+    }
+
+    private void stopUpdates() {
+        if (isTimerRunning) {
+            updateTimer.cancel();
+            updateTimer.purge();
+            updateTimer = null;
+            isTimerRunning = false;
+        }
     }
 
     private void verifyBluetooth() {
@@ -165,6 +207,7 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
                     Log.d(TAG, "Enter Region");
                     // Toast.makeText(getApplicationContext(), "Enter Region", Toast.LENGTH_SHORT).show();
                     displayMessage("Benvenuto in ufficio!");
+                    IsInOffice = true;
                     beaconManager.startRangingBeaconsInRegion(region);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -178,6 +221,7 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
                     Log.d(TAG, "Exit Region");
                     // Toast.makeText(getApplicationContext(), "Exit Region", Toast.LENGTH_SHORT).show();
                     displayMessage("Arrivederci!");
+                    IsInOffice = false;
                     beaconManager.stopRangingBeaconsInRegion(region);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -199,14 +243,20 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
                     if (oneBeacon.getId2().equals(Identifier.parse("1")) && oneBeacon.getId3().equals(Identifier.parse("1"))) {
                         d1 = oneBeacon.getDistance();
+                        tx1 = oneBeacon.getTxPower();
+                        rssi1 = oneBeacon.getRssi();
                         updateText1("" + d1);
                     }
                     if (oneBeacon.getId2().equals(Identifier.parse("1")) && oneBeacon.getId3().equals(Identifier.parse("2"))) {
                         d2 = oneBeacon.getDistance();
+                        tx2 = oneBeacon.getTxPower();
+                        rssi2 = oneBeacon.getRssi();
                         updateText2("" + d2);
                     }
                     if (oneBeacon.getId2().equals(Identifier.parse("1")) && oneBeacon.getId3().equals(Identifier.parse("3"))) {
                         d3 = oneBeacon.getDistance();
+                        tx3 = oneBeacon.getTxPower();
+                        rssi3 = oneBeacon.getRssi();
                         updateText3("" + d3);
                     }
 
@@ -305,19 +355,38 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
         });
     }
 
-    private void sendData(){
+    public String getUTCTime() {
+
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("HH:mm:ss");
+        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
+        String localTime = date.format(currentLocalTime);
+
+        return localTime;
+    }
+
+    public void sendData(){
 
         final String url = SEND_URL;
 
         JSONObject jsonObject = null;
+        Str_time = getUTCTime();
+        //Str_time = getNTPTime();
 
         try {
             jsonObject = new JSONObject();
-            jsonObject.put("time", time);
+            jsonObject.put("timestamp", Str_time);
             jsonObject.put("uuid", deviceId);
-            jsonObject.put("b1", d1);
-            jsonObject.put("b2", d2);
-            jsonObject.put("b3", d3);
+            jsonObject.put("d1", d1);
+            jsonObject.put("d2", d2);
+            jsonObject.put("d3", d3);
+            jsonObject.put("tx1", tx1);
+            jsonObject.put("tx2", tx2);
+            jsonObject.put("tx3", tx3);
+            jsonObject.put("rssi1", rssi1);
+            jsonObject.put("rssi2", rssi2);
+            jsonObject.put("rssi3", rssi3);
             jsonObject.put("area", area);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -330,13 +399,11 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
                     @Override
                     public void onResponse(JSONObject response){
 
-                        Log.v(TAG, "LOGIN Response: " + response.toString());
-
                         try {
                             boolean valid = response.getBoolean("valid");
 
                             if(valid) {
-                                Toast.makeText(getApplicationContext(), "send OK!", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "OK!", Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "send FAIL!", Toast.LENGTH_SHORT).show();
