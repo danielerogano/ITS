@@ -362,7 +362,7 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
         Date currentLocalTime = cal.getTime();
-        DateFormat date = new SimpleDateFormat("HH:mm:ss");
+        DateFormat date = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
         String localTime = date.format(currentLocalTime);
 
