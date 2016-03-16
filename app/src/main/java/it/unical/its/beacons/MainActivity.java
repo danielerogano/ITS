@@ -3,6 +3,7 @@ package it.unical.its.beacons;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,7 +48,7 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
     private DeviceUUIDFactory uuidFactory;
     private String deviceId;
-    private String Str_time;
+    private String Str_time, timeNTP;
 
     public boolean IsInOffice;
     public boolean isTimerRunning;
@@ -154,8 +155,8 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
         try {
             if (!BeaconManager.getInstanceForApplication(this).checkAvailability()) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Bluetooth not enabled");
-                builder.setMessage("Please enable bluetooth in settings and restart this application.");
+                builder.setTitle("Bluetooth non abilitato");
+                builder.setMessage("Si prega di abilitare il bluetooth e riavviare l'applicazione.");
                 builder.setPositiveButton(android.R.string.ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -169,8 +170,8 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
         }
         catch (RuntimeException e) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Bluetooth LE not available");
-            builder.setMessage("Sorry, this device does not support Bluetooth LE.");
+            builder.setTitle("Bluetooth LE non disponibile");
+            builder.setMessage("Spiacenti, questo dispositivo non supporta il Bluetooth LE.");
             builder.setPositiveButton(android.R.string.ok, null);
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
@@ -246,7 +247,7 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
                         updateText3("" + d3);
                     }
 
-                    if (d1< 5 || d2 < 5 || d3 < 5) {
+                    if ((d1 > 0 && d1 < 5) || (d2 > 0 && d2 < 5) || (d2 > 0 && d2 < 5)) {
                         IsInOffice = true;
                     }
                     else {
@@ -362,11 +363,24 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
         Date currentLocalTime = cal.getTime();
-        DateFormat date = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        DateFormat date = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
         String localTime = date.format(currentLocalTime);
 
         return localTime;
+    }
+
+    public String getNTPTime() {
+        SntpClient client = new SntpClient();
+        if (client.requestTime("ntp1.inrim.it", 30000)) {
+            long now = client.getNtpTime() + SystemClock.elapsedRealtime() -
+                    client.getNtpTimeReference();
+            Date current = new Date(now);
+            DateFormat date = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+            timeNTP = date.format(current);
+            Log.i("NTP tag", current.toString());
+        }
+       return timeNTP;
     }
 
     public void sendData(){
@@ -375,11 +389,13 @@ public class MainActivity extends ActionBarActivity implements BeaconConsumer {
 
         JSONObject jsonObject = null;
         Str_time = getUTCTime();
+        timeNTP = getNTPTime();
         //Str_time = getNTPTime();
 
         try {
             jsonObject = new JSONObject();
             jsonObject.put("timestamp", Str_time);
+            jsonObject.put("timeNTP", timeNTP);
             jsonObject.put("uuid", deviceId);
             jsonObject.put("d1", d1);
             jsonObject.put("d2", d2);
